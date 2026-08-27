@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "assignments",
     "crispy_forms",
     "crispy_bootstrap4",
+    "dashboard",
 ]
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
