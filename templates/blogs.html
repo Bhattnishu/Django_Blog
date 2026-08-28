@@ -2,95 +2,269 @@
 
 {% block content %}
 
-<!-- Page content-->
+<!-- Page content -->
 <div class="container mt-5">
+
     <div class="row">
+
         <div class="col-lg-8">
-            <!-- Post content-->
+
+            <!-- Post content -->
             <article>
-                <!-- Post header-->
+
+                <!-- Post header -->
                 <header class="mb-4">
-                    <!-- Post title-->
-                    <h1 class="fw-bolder mb-1">{{ single_blog.title }}</h1>
-                    <!-- Post meta content-->
-                    <div class="text-muted fst-italic mb-2">Posted on {{ single_blog.created_at }} by {{ single_blog.author }}</div>
-                    <!-- Post category-->
-                    <a class="badge bg-warning text-decoration-none text-light" href="#!">{{ single_blog.category }}</a>
+
+                    <h1 class="fw-bolder mb-1">
+                        {{ single_blog.title }}
+                    </h1>
+
+                    <div class="text-muted fst-italic mb-2">
+                        Posted on {{ single_blog.created_at }}
+                        by {{ single_blog.author }}
+                    </div>
+
+                    <a
+                        class="badge bg-warning text-decoration-none text-light"
+                        href="#!"
+                    >
+                        {{ single_blog.category }}
+                    </a>
+
                 </header>
-                <!-- Preview image figure-->
-                <figure class="mb-4"><img class="img-fluid rounded" src="{{ single_blog.featured_image.url }}" alt="..." /></figure>
-                <!-- Post content-->
+
+
+                <!-- Preview image -->
+                {% if single_blog.featured_image %}
+                <figure class="mb-4">
+                    <img
+                        class="img-fluid rounded"
+                        src="{{ single_blog.featured_image.url }}"
+                        alt="{{ single_blog.title }}"
+                    />
+                </figure>
+                {% endif %}
+
+
+                <!-- Post content -->
                 <section class="mb-5">
-                    <p class="fs-5 mb-4">{{ single_blog.short_description }}</p>
-                    <p class="fs-5 mb-4">{{ single_blog.blog_body }}</p>
+
+                    <p class="fs-5 mb-4">
+                        {{ single_blog.short_description }}
+                    </p>
+
+                    <p class="fs-5 mb-4">
+                        {{ single_blog.blog_body }}
+                    </p>
+
 
                     <!-- Comments -->
-                    <h4>Comments ({{ comment_count }})</h4>
+                    <h4>
+                        Comments ({{ comment_count }})
+                    </h4>
+
+
                     {% if comments %}
+
                         {% for comment in comments %}
-                            <div class="card mt-1">
+
+                            <div class="card mt-2">
+
                                 <div class="card-body">
-                                    <p class="card-text mb-0">{{ comment }}</p>
+
+                                    <p class="card-text mb-0">
+                                        {{ comment.comment }}
+                                    </p>
+
                                     <span>
-                                        <small>By {{ comment.user }}</small>
-                                        <small>| {{ comment.created_at | timesince }} ago</small>
+                                        <small>
+                                            By {{ comment.user }}
+                                        </small>
+
+                                        <small>
+                                            | {{ comment.created_at|timesince }} ago
+                                        </small>
                                     </span>
+
+
+                                    <!-- Only comment owner gets actions -->
+                                    {% if comment.user == request.user %}
+
+                                        <div class="mt-2">
+
+                                            <a
+                                                href="{% url 'edit_comment' comment.id %}"
+                                                class="btn btn-sm btn-success"
+                                            >
+                                                Edit
+                                            </a>
+
+
+                                            <form
+                                                action="{% url 'delete_comment' comment.id %}"
+                                                method="POST"
+                                                style="display: inline;"
+                                            >
+
+                                                {% csrf_token %}
+
+                                                <button
+                                                    type="submit"
+                                                    class="btn btn-sm btn-danger"
+                                                    onclick="return confirm('Are you sure you want to delete this comment?');"
+                                                >
+                                                    Delete
+                                                </button>
+
+                                            </form>
+
+                                        </div>
+
+                                    {% endif %}
+
                                 </div>
-                            </div>
-                        {% endfor %}
-                    {% else %}
-                    No comments yet.
-                    {% endif %}
-                    <br>
-                    <div class="form-group">
-                        {% if user.is_authenticated %}
-                        <form action="" method="POST">
-                            {% csrf_token %}
-                            <div class="form-group">
-                                <textarea name="comment" class="form-control" placeholder="Write your comment"></textarea>
-                                <input type="submit" value="Submit" class="btn btn-primary mt-2">
+
                             </div>
 
-                        </form>
+                        {% endfor %}
+
+                    {% else %}
+
+                        <p>No comments yet.</p>
+
+                    {% endif %}
+
+
+                    <br>
+
+
+                    <!-- Add comment -->
+                    <div class="form-group">
+
+                        {% if user.is_authenticated %}
+
+                            <form method="POST">
+
+                                {% csrf_token %}
+
+                                <div class="form-group">
+
+                                    <textarea
+                                        name="comment"
+                                        class="form-control"
+                                        placeholder="Write your comment"
+                                        rows="4"
+                                        required
+                                    ></textarea>
+
+                                    <input
+                                        type="submit"
+                                        value="Submit"
+                                        class="btn btn-primary mt-2"
+                                    >
+
+                                </div>
+
+                            </form>
+
                         {% else %}
-                        <p>Please <span><a href="{% url 'login' %}">login</a></span> to write a comment!</p>
+
+                            <p>
+                                Please
+                                <span>
+                                    <a href="{% url 'login' %}">
+                                        login
+                                    </a>
+                                </span>
+                                to write a comment!
+                            </p>
+
                         {% endif %}
+
                     </div>
 
                 </section>
+
             </article>
+
         </div>
-        <!-- Side widgets-->
+
+
+        <!-- Side widgets -->
         <div class="col-lg-4">
-            
-            <!-- Categories widget-->
+
+            <!-- Categories -->
             <div class="card mb-4 p-3">
-                <h4 class="font-italic">Categories</h4>
+
+                <h4 class="font-italic">
+                    Categories
+                </h4>
+
                 <div class="card-body">
+
                     <div class="row">
+
                         <div class="col-sm-6">
+
                             <ul class="list-unstyled mb-0">
+
                                 {% for cat in categories %}
-                                <li><a href="{% url 'posts_by_category' cat.id %}">{{ cat.category_name }}</a></li>
+
+                                    <li>
+                                        <a
+                                            href="{% url 'posts_by_category' cat.id %}"
+                                        >
+                                            {{ cat.category_name }}
+                                        </a>
+                                    </li>
+
                                 {% endfor %}
+
                             </ul>
+
                         </div>
+
                     </div>
+
                 </div>
+
             </div>
-            <!-- Side widget-->
+
+
+            <!-- Social links -->
             {% if social_links %}
-            <div class="card mb-4 p-3">
-                <h4 class="font-italic">Follow Us</h4>
-                <ol class="list-unstyled">
-                    {% for i in social_links %}
-                    <li><a href="{{ i.link }}" target="_blank">{{ i.platform }}</a></li>
-                    {% endfor %}
-                </ol>
-            </div>
+
+                <div class="card mb-4 p-3">
+
+                    <h4 class="font-italic">
+                        Follow Us
+                    </h4>
+
+                    <ol class="list-unstyled">
+
+                        {% for i in social_links %}
+
+                            <li>
+                                <a
+                                    href="{{ i.link }}"
+                                    target="_blank"
+                                >
+                                    {{ i.platform }}
+                                </a>
+                            </li>
+
+                        {% endfor %}
+
+                    </ol>
+
+                </div>
+
             {% endif %}
+
         </div>
+
     </div>
+
 </div>
 
 {% endblock %}

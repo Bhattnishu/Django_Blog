@@ -2,89 +2,132 @@
 
 {% block content %}
 
-    {% for post in featured_post %}
+
+<!-- ==========================================
+     FEATURED POST
+========================================== -->
+
+{% for post in featured_post %}
+
     {% if forloop.first %}
-    <!-- Featured Post -->
-    <div class="jumbotron p-3 p-md-5 text-white rounded bg-dark"
-         style="background-image: url({{ post.featured_image.url }}); background-blend-mode: overlay; background-size: cover; background-position: center;">
 
-        <div class="col-md-8 px-0">
+        <div
+            class="featured-post p-3 p-md-5 rounded"
+            style="
+                background-image: url('{{ post.featured_image.url }}');
+            "
+        >
 
-            <h1 class="display-4 font-italic">
-                {{post.title}}
-            </h1>
+            <div class="col-md-8 px-0">
 
-            <p class="lead my-3">
-                {{post.short_description | truncatewords:25 }}
-            </p>
+                <h1 class="display-4 font-italic">
+                    {{ post.title }}
+                </h1>
 
-            <p class="lead mb-0">
-                <a href="{% url 'blogs' post.slug %}" class="text-white font-weight-bold">
-                    Continue reading →
-                </a>
-            </p>
+                <p class="lead my-3">
+                    {{ post.short_description|truncatewords:25 }}
+                </p>
+
+                <p class="lead mb-0">
+
+                    <a
+                        href="{% url 'blogs' post.slug %}"
+                        class="featured-link font-weight-bold"
+                    >
+                        Continue reading →
+                    </a>
+
+                </p>
+
+            </div>
 
         </div>
 
-    </div>
     {% endif %}
-    {% endfor %}
+
+{% endfor %}
 
 
-    <!-- Featured Posts -->
-    <div class="row mb-4">
-        Featured Post
-        {% for post in featured_post %}
-        {% if not forloop.first%}
-        <div class="col-md-6">
 
-            <div class="card border-0">
+<!-- ==========================================
+     OTHER FEATURED POSTS
+========================================== -->
 
-                <div class="card-body">
+<div class="row mb-4">
 
-                    <span class="text-primary font-weight-bold">
-                        {{post.category}}
-                    </span>
+    {% for post in featured_post %}
 
-                    <h3 class="mt-2">
-                        {{post.title}}
-                    </h3>
+        {% if not forloop.first %}
 
-                    <small class="mb-2 text-muted d-block">
-                        {{post.created_at | timesince }} ago | {{post.author}}
-                    </small>
+            <div class="col-md-6">
 
-                    <p class="card-text">
-                        {{post.short_description | truncatewords:25 }}
-                    </p>
+                <div class="card blog-card">
 
-                    <a href="{% url 'blogs' post.slug %}" class="btn btn-sm btn-outline-primary">
-                        Read More →
-                    </a>
+                    <div class="card-body">
+
+                        <span class="category-name font-weight-bold">
+                            {{ post.category }}
+                        </span>
+
+                        <h3 class="mt-2">
+                            {{ post.title }}
+                        </h3>
+
+                        <small class="mb-2 post-meta d-block">
+                            {{ post.created_at|timesince }} ago |
+                            {{ post.author }}
+                        </small>
+
+                        <p class="card-text">
+                            {{ post.short_description|truncatewords:25 }}
+                        </p>
+
+                        <a
+                            href="{% url 'blogs' post.slug %}"
+                            class="btn btn-sm outline-green-btn"
+                        >
+                            Read More →
+                        </a>
+
+                    </div>
 
                 </div>
 
             </div>
 
-        </div>
         {% endif %}
-        {% endfor %}
-    </div>
+
+    {% endfor %}
+
+</div>
 
 
-    <!-- Main Content -->
-    <main role="main" class="container p-0">
 
-        <div class="row">
+<!-- ==========================================
+     MAIN CONTENT
+========================================== -->
 
-            <!-- Blog Posts -->
-            <div class="col-md-8 blog-main">
+<main
+    role="main"
+    class="container p-0"
+>
 
-                <h3 class="pb-3 mb-4 border-bottom">
-                    Latest Posts
-                </h3>
+    <div class="row">
 
-                {% for post in posts %}
+
+        <!-- ==========================================
+             BLOG POSTS
+        ========================================== -->
+
+        <div class="col-md-8 blog-main">
+
+            <h3 class="pb-3 mb-4 section-title border-bottom">
+                Latest Posts
+            </h3>
+
+
+            {% for post in posts %}
+
                 <div class="blog-post">
 
                     <h2 class="blog-post-title">
@@ -92,101 +135,150 @@
                     </h2>
 
                     <p class="blog-post-meta">
-                        {{post.created_at | timesince }} ago | 
-                        <a href="#">{{post.author}}</a>
+
+                        {{ post.created_at|timesince }} ago |
+
+                        <a href="#">
+                            {{ post.author }}
+                        </a>
+
                     </p>
 
                     <p>
-                        {{post.short_description | truncatewords:25 }}
+                        {{ post.short_description|truncatewords:25 }}
                     </p>
 
-                    <a href="{% url 'blogs' post.slug %}" class="btn btn-sm btn-outline-dark">
+                    <a
+                        href="{% url 'blogs' post.slug %}"
+                        class="btn btn-sm outline-green-btn"
+                    >
                         Continue Reading →
                     </a>
 
                 </div>
-                {% endfor %}
 
-                <!-- Pagination -->
-                <nav class="blog-pagination">
+            {% empty %}
 
-                    <a class="btn btn-outline-primary" href="#">
-                        Older
-                    </a>
+                <p>
+                    No posts available.
+                </p>
 
-                    <a class="btn btn-outline-secondary disabled" href="#">
-                        Newer
-                    </a>
+            {% endfor %}
 
-                </nav>
+
+
+            <!-- ==========================================
+                 PAGINATION
+            ========================================== -->
+
+            
+        </div>
+
+
+
+        <!-- ==========================================
+             SIDEBAR
+        ========================================== -->
+
+        <aside class="col-md-4 blog-sidebar">
+
+
+            <!-- ==========================================
+                 ABOUT US
+            ========================================== -->
+
+            <div class="sidebar-box p-3 mb-3 rounded">
+
+                <h4 class="font-italic">
+                    {{ about.about_heading }}
+                </h4>
+
+                <p class="mb-0">
+                    {{ about.about_description }}
+                </p>
 
             </div>
 
 
-            <!-- Sidebar -->
-            <aside class="col-md-4 blog-sidebar">
 
-                <!-- About -->
-                <div class="p-3 mb-3 bg-light rounded">
+            <!-- ==========================================
+                 CATEGORIES
+            ========================================== -->
 
-                    <h4 class="font-italic">
-                        {{ about.about_heading }}
-                    </h4>
+            <div class="sidebar-box p-3 mb-3 rounded">
 
-                    <p class="mb-0">
-                        {{ about.about_description }}
-                    </p>
+                <h4 class="font-italic">
+                    Categories
+                </h4>
 
-                </div>
+                <ol class="list-unstyled">
+
+                    {% for cat in categories %}
+
+                        <li class="mb-2">
+
+                            <a
+                                href="{% url 'posts_by_category' cat.id %}"
+                            >
+                                {{ cat.category_name }}
+                            </a>
+
+                        </li>
+
+                    {% empty %}
+
+                        <li>
+                            No categories available.
+                        </li>
+
+                    {% endfor %}
+
+                </ol>
+
+            </div>
 
 
 
+            <!-- ==========================================
+                 FOLLOW US
+            ========================================== -->
 
-                <!-- Categories -->
-                <div class="p-3">
+            {% if social_links %}
 
-                    <h4 class="font-italic">
-                        Categories
-                    </h4>
-
-                    <ol class="list-unstyled">
-
-                        <li><a href="#">Python</a></li>
-                        <li><a href="#">Django</a></li>
-                        <li><a href="#">Django REST Framework</a></li>
-                        <li><a href="#">JavaScript</a></li>
-                        <li><a href="#">Artificial Intelligence</a></li>
-
-                    </ol>
-
-                </div>
-
-
-                {% if scial_links %}
-                <!-- Follow Us -->
-                <div class="p-3">
+                <div class="sidebar-box p-3 rounded">
 
                     <h4 class="font-italic">
                         Follow Us
                     </h4>
 
                     <ol class="list-unstyled">
-                        {% for i in social_links%}
-                        <li><a href="{{ i.link }}" target="_blank">{{ i.platform }}</a></li>
+
+                        {% for i in social_links %}
+
+                            <li class="mb-2">
+
+                                <a
+                                    href="{{ i.link }}"
+                                    target="_blank"
+                                >
+                                    {{ i.platform }}
+                                </a>
+
+                            </li>
+
                         {% endfor %}
+
                     </ol>
 
                 </div>
-                {% endif %}
 
-            </aside>
-
-        </div>
-
-    </main>
-
-</div>
+            {% endif %}
 
 
+        </aside>
+
+    </div>
+
+</main>
 
 {% endblock %}
